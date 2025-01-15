@@ -32,6 +32,11 @@ const EMICalculator = () => {
   const [emi, setEMI] = useState<number>(0);
   const [totalInterest, setTotalInterest] = useState<number>(0);
   const [totalPayment, setTotalPayment] = useState<number>(0);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const calculateEMI = () => {
     const p = parseFloat(principal);
@@ -133,28 +138,35 @@ const EMICalculator = () => {
     }
   };
 
+  if (!mounted) {
+    return null;
+  }
+
   return (
     <div className="w-full max-w-4xl mx-auto p-4 space-y-8">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl font-bold text-emi-text">EMI Calculator</h2>
-        <div className="flex items-center gap-4">
-          <Switch
-            checked={theme === "dark"}
-            onCheckedChange={() => setTheme(theme === "dark" ? "light" : "dark")}
-          />
-          <Button variant="outline" size="icon" onClick={handleReset}>
-            <RotateCcw className="h-4 w-4" />
-          </Button>
-          <Button variant="outline" size="icon" onClick={handleSave}>
-            <DownloadIcon className="h-4 w-4" />
-          </Button>
-          <Button variant="outline" size="icon" onClick={handleShare}>
-            <Share2Icon className="h-4 w-4" />
-          </Button>
+      <div className="fixed top-0 left-0 right-0 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 z-50 border-b">
+        <div className="max-w-4xl mx-auto px-4 py-3 flex justify-between items-center">
+          <h2 className="text-2xl font-bold text-foreground">EMI Calculator</h2>
+          <div className="flex items-center gap-4">
+            <Switch
+              checked={theme === "dark"}
+              onCheckedChange={() => setTheme(theme === "dark" ? "light" : "dark")}
+            />
+            <Button variant="outline" size="icon" onClick={handleReset}>
+              <RotateCcw className="h-4 w-4" />
+            </Button>
+            <Button variant="outline" size="icon" onClick={handleSave}>
+              <DownloadIcon className="h-4 w-4" />
+            </Button>
+            <Button variant="outline" size="icon" onClick={handleShare}>
+              <Share2Icon className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
       </div>
 
-      <Card className="p-6 space-y-6">
+      <div className="pt-16">
+        <Card className="p-6 space-y-6">
         <div className="space-y-4">
           <div className="space-y-2">
             <div className="flex items-center gap-2">
@@ -253,11 +265,12 @@ const EMICalculator = () => {
             />
           </div>
         </div>
-      </Card>
+        </Card>
 
-      <div className="grid md:grid-cols-2 gap-6">
-        <ResultCard emi={emi} totalInterest={totalInterest} totalPayment={totalPayment} />
-        <EMIChart principal={parseFloat(principal)} totalInterest={totalInterest} />
+        <div className="grid md:grid-cols-2 gap-6 mt-6">
+          <ResultCard emi={emi} totalInterest={totalInterest} totalPayment={totalPayment} />
+          <EMIChart principal={parseFloat(principal)} totalInterest={totalInterest} />
+        </div>
       </div>
     </div>
   );
