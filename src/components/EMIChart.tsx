@@ -17,7 +17,7 @@ const EMIChart = ({ principal, totalInterest }: EMIChartProps) => {
 
   return (
     <Card className="p-6">
-      <h3 className="text-xl font-semibold text-emi-text mb-4">Payment Breakdown</h3>
+      <h3 className="text-xl font-semibold text-foreground mb-4">Payment Breakdown</h3>
       <div className="w-full h-[250px]">
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
