@@ -17,27 +17,27 @@ const ResultCard = ({ emi, totalInterest, totalPayment }: ResultCardProps) => {
   };
 
   return (
-    <Card className="p-6 space-y-4 bg-emi-secondary">
-      <h3 className="text-xl font-semibold text-emi-text">Payment Details</h3>
+    <Card className="p-6 space-y-4">
+      <h3 className="text-xl font-semibold text-foreground">Payment Details</h3>
       
       <div className="space-y-3">
         <div className="flex justify-between items-center">
-          <span className="text-sm text-gray-600">Monthly EMI:</span>
-          <span className="text-lg font-semibold text-emi-primary">
+          <span className="text-sm text-muted-foreground">Monthly EMI:</span>
+          <span className="text-lg font-semibold text-foreground">
             {formatCurrency(emi)}
           </span>
         </div>
         
         <div className="flex justify-between items-center">
-          <span className="text-sm text-gray-600">Total Interest:</span>
-          <span className="text-lg font-semibold text-emi-primary">
+          <span className="text-sm text-muted-foreground">Total Interest:</span>
+          <span className="text-lg font-semibold text-foreground">
             {formatCurrency(totalInterest)}
           </span>
         </div>
         
         <div className="flex justify-between items-center">
-          <span className="text-sm text-gray-600">Total Payment:</span>
-          <span className="text-lg font-semibold text-emi-primary">
+          <span className="text-sm text-muted-foreground">Total Payment:</span>
+          <span className="text-lg font-semibold text-foreground">
             {formatCurrency(totalPayment)}
           </span>
         </div>

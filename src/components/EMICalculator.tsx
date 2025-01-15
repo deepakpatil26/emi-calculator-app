@@ -167,104 +167,104 @@ const EMICalculator = () => {
 
       <div className="pt-16">
         <Card className="p-6 space-y-6">
-        <div className="space-y-4">
-          <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              <Label htmlFor="principal">Loan Amount (₹)</Label>
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger>
-                    <InfoIcon className="h-4 w-4" />
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Enter the total loan amount you wish to borrow</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <Label htmlFor="principal" className="text-foreground">Loan Amount (₹)</Label>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <InfoIcon className="h-4 w-4" />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Enter the total loan amount you wish to borrow</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
+              <Input
+                id="principal"
+                value={formatINR(principal)}
+                onChange={handlePrincipalChange}
+                className="text-lg"
+                placeholder="Enter loan amount"
+              />
+              <Slider
+                value={[parseFloat(principal)]}
+                onValueChange={handlePrincipalSlider}
+                max={10000000}
+                step={10000}
+                className="mt-2"
+              />
             </div>
-            <Input
-              id="principal"
-              value={formatINR(principal)}
-              onChange={handlePrincipalChange}
-              className="text-lg"
-              placeholder="Enter loan amount"
-            />
-            <Slider
-              value={[parseFloat(principal)]}
-              onValueChange={handlePrincipalSlider}
-              max={10000000}
-              step={10000}
-              className="mt-2"
-            />
-          </div>
 
-          <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              <Label htmlFor="interest">Interest Rate (% per annum)</Label>
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger>
-                    <InfoIcon className="h-4 w-4" />
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Annual interest rate charged on the loan</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <Label htmlFor="interest" className="text-foreground">Interest Rate (% per annum)</Label>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <InfoIcon className="h-4 w-4" />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Annual interest rate charged on the loan</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
+              <Input
+                id="interest"
+                type="number"
+                value={interest}
+                onChange={(e) => setInterest(e.target.value)}
+                className="text-lg"
+                step="0.1"
+                min="0"
+                max="100"
+                placeholder="Enter interest rate"
+              />
+              <Slider
+                value={[parseFloat(interest)]}
+                onValueChange={(value) => setInterest(value[0].toString())}
+                max={30}
+                step={0.1}
+                className="mt-2"
+              />
             </div>
-            <Input
-              id="interest"
-              type="number"
-              value={interest}
-              onChange={(e) => setInterest(e.target.value)}
-              className="text-lg"
-              step="0.1"
-              min="0"
-              max="100"
-              placeholder="Enter interest rate"
-            />
-            <Slider
-              value={[parseFloat(interest)]}
-              onValueChange={(value) => setInterest(value[0].toString())}
-              max={30}
-              step={0.1}
-              className="mt-2"
-            />
-          </div>
 
-          <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              <Label htmlFor="tenure">Loan Tenure (Years)</Label>
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger>
-                    <InfoIcon className="h-4 w-4" />
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Duration of the loan in years</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <Label htmlFor="tenure" className="text-foreground">Loan Tenure (Years)</Label>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <InfoIcon className="h-4 w-4" />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Duration of the loan in years</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
+              <Input
+                id="tenure"
+                type="number"
+                value={tenure}
+                onChange={(e) => setTenure(e.target.value)}
+                className="text-lg"
+                min="0"
+                step="0.5"
+                placeholder="Enter loan tenure"
+              />
+              <Slider
+                value={[parseFloat(tenure)]}
+                onValueChange={(value) => setTenure(value[0].toString())}
+                max={30}
+                step={0.5}
+                className="mt-2"
+              />
             </div>
-            <Input
-              id="tenure"
-              type="number"
-              value={tenure}
-              onChange={(e) => setTenure(e.target.value)}
-              className="text-lg"
-              min="0"
-              step="0.5"
-              placeholder="Enter loan tenure"
-            />
-            <Slider
-              value={[parseFloat(tenure)]}
-              onValueChange={(value) => setTenure(value[0].toString())}
-              max={30}
-              step={0.5}
-              className="mt-2"
-            />
           </div>
-        </div>
         </Card>
 
         <div className="grid md:grid-cols-2 gap-6 mt-6">
