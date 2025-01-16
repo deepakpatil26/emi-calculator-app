@@ -24,6 +24,7 @@ A modern, user-friendly EMI (Equated Monthly Installment) calculator built with 
 
 ## 🛠️ Technologies Used
 
+- Vite
 - React 18
 - TypeScript
 - Tailwind CSS <!-- Update based on your styling solution -->
