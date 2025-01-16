@@ -15,7 +15,7 @@ A modern, user-friendly EMI (Equated Monthly Installment) calculator built with 
 
 [Live Demo](#) <!-- Add your deployed app link here -->
 
-![EMI Calculator](public/emi-calculator-app.png)(#) <!-- Add your app screenshot here -->
+![EMI Calculator](public/emi-calculator-app.png) <!-- Add your app screenshot here -->
 
 ## 🛠️ Technologies Used
 
