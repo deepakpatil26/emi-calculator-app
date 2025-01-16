@@ -13,7 +13,7 @@ A modern, user-friendly EMI (Equated Monthly Installment) calculator built with 
 
 ## 🚀 Demo
 
-[Live Demo](#) <!-- Add your deployed app link here -->
+[Live Demo](https://emi-calculator-app-fawn.vercel.app/) <!-- Add your deployed app link here -->
 
 ![EMI Calculator](public/emi-calculator-app.png) <!-- Add your app screenshot here -->
 
