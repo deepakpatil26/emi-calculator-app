@@ -1,34 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
-import { Slider } from "@/components/ui/slider";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { useToast } from "@/components/ui/use-toast";
-import ResultCard from './ResultCard';
-import EMIChart from './EMIChart';
-import LoanSettings from './LoanSettings';
-import { Switch } from "@/components/ui/switch";
-import { InfoIcon, DownloadIcon, Share2Icon, RotateCcw, Link2Icon, Copy, Mail } from "lucide-react";
 import { useTheme } from 'next-themes';
 import jsPDF from 'jspdf';
 import { LOAN_TYPES, CURRENCIES, type Currency } from '@/types/calculator';
+import ResultCard from './ResultCard';
+import EMIChart from './EMIChart';
+import LoanSettings from './LoanSettings';
+import LoanInputs from './LoanInputs';
+import HeaderActions from './HeaderActions';
 
 const EMICalculator = () => {
   const { toast } = useToast();
-  const { theme, setTheme } = useTheme();
   const [principal, setPrincipal] = useState<string>(() => 
     localStorage.getItem('emiPrincipal') || '500000'
   );
@@ -87,10 +70,6 @@ const EMICalculator = () => {
     localStorage.setItem('emiInterest', interest);
     localStorage.setItem('emiTenure', tenure);
   }, [principal, interest, tenure]);
-
-  const formatINR = (value: string) => {
-    return value.replace(/\D/g, "").replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
-  };
 
   const handlePrincipalChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.replace(/,/g, '');
@@ -188,62 +167,24 @@ const EMICalculator = () => {
     }
   };
 
+  const formatINR = (value: string) => {
+    return value.replace(/\D/g, "").replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+  };
+
   if (!mounted) {
     return null;
   }
-
-  const selectedLoanType = LOAN_TYPES[loanType];
 
   return (
     <div className="w-full max-w-4xl mx-auto p-4 space-y-8">
       <div className="fixed top-0 left-0 right-0 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 z-50 border-b">
         <div className="max-w-4xl mx-auto px-4 py-3 flex justify-between items-center">
           <h2 className="text-2xl font-bold text-foreground">EMI Calculator</h2>
-          <div className="flex items-center gap-4">
-            <Switch
-              checked={theme === "dark"}
-              onCheckedChange={() => setTheme(theme === "dark" ? "light" : "dark")}
-            />
-            <Button variant="outline" size="icon" onClick={handleReset}>
-              <RotateCcw className="h-4 w-4" />
-            </Button>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="icon">
-                  <DownloadIcon className="h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                <DropdownMenuItem onClick={() => handleSave('pdf')}>
-                  Save as PDF
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => handleSave('csv')}>
-                  Save as CSV
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="icon">
-                  <Share2Icon className="h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                <DropdownMenuItem onClick={() => handleShare('link')}>
-                  <Link2Icon className="h-4 w-4 mr-2" />
-                  Share link
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => handleShare('copy')}>
-                  <Copy className="h-4 w-4 mr-2" />
-                  Copy to clipboard
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => handleShare('email')}>
-                  <Mail className="h-4 w-4 mr-2" />
-                  Share via email
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
+          <HeaderActions
+            onReset={handleReset}
+            onSave={handleSave}
+            onShare={handleShare}
+          />
         </div>
       </div>
 
@@ -256,104 +197,17 @@ const EMICalculator = () => {
             onCurrencyChange={handleCurrencyChange}
           />
 
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <div className="flex items-center gap-2">
-                <Label htmlFor="principal" className="text-foreground">Loan Amount ({currency.symbol})</Label>
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger>
-                      <InfoIcon className="h-4 w-4" />
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Enter the total loan amount you wish to borrow</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              </div>
-              <Input
-                id="principal"
-                value={formatINR(principal)}
-                onChange={handlePrincipalChange}
-                className="text-lg"
-                placeholder="Enter loan amount"
-              />
-              <Slider
-                value={[parseFloat(principal)]}
-                onValueChange={handlePrincipalSlider}
-                max={selectedLoanType.maxAmount}
-                step={10000}
-                className="mt-2"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <div className="flex items-center gap-2">
-                <Label htmlFor="interest" className="text-foreground">Interest Rate (% per annum)</Label>
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger>
-                      <InfoIcon className="h-4 w-4" />
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Annual interest rate charged on the loan</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              </div>
-              <Input
-                id="interest"
-                type="number"
-                value={interest}
-                onChange={(e) => setInterest(e.target.value)}
-                className="text-lg"
-                step="0.1"
-                min="0"
-                max="100"
-                placeholder="Enter interest rate"
-              />
-              <Slider
-                value={[parseFloat(interest)]}
-                onValueChange={(value) => setInterest(value[0].toString())}
-                max={30}
-                step={0.1}
-                className="mt-2"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <div className="flex items-center gap-2">
-                <Label htmlFor="tenure" className="text-foreground">Loan Tenure (Years)</Label>
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger>
-                      <InfoIcon className="h-4 w-4" />
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Duration of the loan in years</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              </div>
-              <Input
-                id="tenure"
-                type="number"
-                value={tenure}
-                onChange={(e) => setTenure(e.target.value)}
-                className="text-lg"
-                min="0"
-                step="0.5"
-                placeholder="Enter loan tenure"
-              />
-              <Slider
-                value={[parseFloat(tenure)]}
-                onValueChange={(value) => setTenure(value[0].toString())}
-                max={30}
-                step={0.5}
-                className="mt-2"
-              />
-            </div>
-          </div>
+          <LoanInputs
+            principal={principal}
+            interest={interest}
+            tenure={tenure}
+            currency={currency}
+            loanType={loanType}
+            onPrincipalChange={handlePrincipalChange}
+            onPrincipalSlider={handlePrincipalSlider}
+            onInterestChange={(e) => setInterest(e.target.value)}
+            onTenureChange={(e) => setTenure(e.target.value)}
+          />
         </Card>
 
         <div className="grid md:grid-cols-2 gap-6 mt-6">
