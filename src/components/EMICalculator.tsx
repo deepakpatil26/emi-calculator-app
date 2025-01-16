@@ -19,10 +19,12 @@ import {
 import { useToast } from "@/components/ui/use-toast";
 import ResultCard from './ResultCard';
 import EMIChart from './EMIChart';
+import LoanSettings from './LoanSettings';
 import { Switch } from "@/components/ui/switch";
 import { InfoIcon, DownloadIcon, Share2Icon, RotateCcw, Link2Icon, Copy, Mail } from "lucide-react";
 import { useTheme } from 'next-themes';
 import jsPDF from 'jspdf';
+import { LOAN_TYPES, CURRENCIES, type Currency } from '@/types/calculator';
 
 const EMICalculator = () => {
   const { toast } = useToast();
@@ -36,6 +38,13 @@ const EMICalculator = () => {
   const [tenure, setTenure] = useState<string>(() => 
     localStorage.getItem('emiTenure') || '2'
   );
+  const [loanType, setLoanType] = useState<string>(() =>
+    localStorage.getItem('emiLoanType') || 'personal'
+  );
+  const [currency, setCurrency] = useState<Currency>(() => {
+    const saved = localStorage.getItem('emiCurrency');
+    return saved ? JSON.parse(saved) : CURRENCIES[0];
+  });
   const [emi, setEMI] = useState<number>(0);
   const [totalInterest, setTotalInterest] = useState<number>(0);
   const [totalPayment, setTotalPayment] = useState<number>(0);
@@ -44,6 +53,18 @@ const EMICalculator = () => {
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  const handleLoanTypeChange = (type: string) => {
+    setLoanType(type);
+    const loanTypeInfo = LOAN_TYPES[type];
+    setInterest(loanTypeInfo.defaultRate.toString());
+    localStorage.setItem('emiLoanType', type);
+  };
+
+  const handleCurrencyChange = (newCurrency: Currency) => {
+    setCurrency(newCurrency);
+    localStorage.setItem('emiCurrency', JSON.stringify(newCurrency));
+  };
 
   const calculateEMI = () => {
     const p = parseFloat(principal);
@@ -62,7 +83,6 @@ const EMICalculator = () => {
 
   useEffect(() => {
     calculateEMI();
-    // Save to localStorage
     localStorage.setItem('emiPrincipal', principal);
     localStorage.setItem('emiInterest', interest);
     localStorage.setItem('emiTenure', tenure);
@@ -97,15 +117,15 @@ const EMICalculator = () => {
     if (format === 'pdf') {
       const pdf = new jsPDF();
       pdf.text('EMI Calculation Details', 20, 20);
-      pdf.text(`Loan Amount: ₹${formatINR(principal)}`, 20, 40);
+      pdf.text(`Loan Amount: ${currency.symbol}${formatINR(principal)}`, 20, 40);
       pdf.text(`Interest Rate: ${interest}%`, 20, 50);
       pdf.text(`Tenure: ${tenure} years`, 20, 60);
-      pdf.text(`Monthly EMI: ₹${Math.round(emi).toLocaleString('en-IN')}`, 20, 70);
-      pdf.text(`Total Interest: ₹${Math.round(totalInterest).toLocaleString('en-IN')}`, 20, 80);
-      pdf.text(`Total Payment: ₹${Math.round(totalPayment).toLocaleString('en-IN')}`, 20, 90);
+      pdf.text(`Monthly EMI: ${currency.symbol}${Math.round(emi).toLocaleString('en-IN')}`, 20, 70);
+      pdf.text(`Total Interest: ${currency.symbol}${Math.round(totalInterest).toLocaleString('en-IN')}`, 20, 80);
+      pdf.text(`Total Payment: ${currency.symbol}${Math.round(totalPayment).toLocaleString('en-IN')}`, 20, 90);
       pdf.save('emi-calculation.pdf');
     } else {
-      const csvContent = `Loan Amount,Interest Rate,Tenure,Monthly EMI,Total Interest,Total Payment\n₹${formatINR(principal)},${interest}%,${tenure},₹${Math.round(emi).toLocaleString('en-IN')},₹${Math.round(totalInterest).toLocaleString('en-IN')},₹${Math.round(totalPayment).toLocaleString('en-IN')}`;
+      const csvContent = `Loan Amount,Interest Rate,Tenure,Monthly EMI,Total Interest,Total Payment\n${currency.symbol}${formatINR(principal)},${interest}%,${tenure},${currency.symbol}${Math.round(emi).toLocaleString('en-IN')},${currency.symbol}${Math.round(totalInterest).toLocaleString('en-IN')},${currency.symbol}${Math.round(totalPayment).toLocaleString('en-IN')}`;
       const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
       const link = document.createElement('a');
       link.href = URL.createObjectURL(blob);
@@ -122,7 +142,7 @@ const EMICalculator = () => {
   const handleShare = async (method: 'link' | 'copy' | 'email') => {
     const shareData = {
       title: 'EMI Calculation Details',
-      text: `Loan Amount: ₹${formatINR(principal)}\nInterest Rate: ${interest}%\nTenure: ${tenure} years\nMonthly EMI: ₹${Math.round(emi).toLocaleString('en-IN')}`,
+      text: `Loan Amount: ${currency.symbol}${formatINR(principal)}\nInterest Rate: ${interest}%\nTenure: ${tenure} years\nMonthly EMI: ${currency.symbol}${Math.round(emi).toLocaleString('en-IN')}`,
       url: window.location.href
     };
 
@@ -171,6 +191,8 @@ const EMICalculator = () => {
   if (!mounted) {
     return null;
   }
+
+  const selectedLoanType = LOAN_TYPES[loanType];
 
   return (
     <div className="w-full max-w-4xl mx-auto p-4 space-y-8">
@@ -227,10 +249,17 @@ const EMICalculator = () => {
 
       <div className="pt-16">
         <Card className="p-6 space-y-6">
+          <LoanSettings
+            selectedLoanType={loanType}
+            onLoanTypeChange={handleLoanTypeChange}
+            selectedCurrency={currency}
+            onCurrencyChange={handleCurrencyChange}
+          />
+
           <div className="space-y-4">
             <div className="space-y-2">
               <div className="flex items-center gap-2">
-                <Label htmlFor="principal" className="text-foreground">Loan Amount (₹)</Label>
+                <Label htmlFor="principal" className="text-foreground">Loan Amount ({currency.symbol})</Label>
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger>
@@ -252,7 +281,7 @@ const EMICalculator = () => {
               <Slider
                 value={[parseFloat(principal)]}
                 onValueChange={handlePrincipalSlider}
-                max={10000000}
+                max={selectedLoanType.maxAmount}
                 step={10000}
                 className="mt-2"
               />
@@ -328,7 +357,12 @@ const EMICalculator = () => {
         </Card>
 
         <div className="grid md:grid-cols-2 gap-6 mt-6">
-          <ResultCard emi={emi} totalInterest={totalInterest} totalPayment={totalPayment} />
+          <ResultCard 
+            emi={emi} 
+            totalInterest={totalInterest} 
+            totalPayment={totalPayment} 
+            currency={currency}
+          />
           <EMIChart principal={parseFloat(principal)} totalInterest={totalInterest} />
         </div>
       </div>

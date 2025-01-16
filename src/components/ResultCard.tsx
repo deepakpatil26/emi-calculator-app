@@ -1,17 +1,19 @@
 import React from 'react';
 import { Card } from "@/components/ui/card";
+import { type Currency } from '@/types/calculator';
 
 interface ResultCardProps {
   emi: number;
   totalInterest: number;
   totalPayment: number;
+  currency: Currency;
 }
 
-const ResultCard = ({ emi, totalInterest, totalPayment }: ResultCardProps) => {
+const ResultCard = ({ emi, totalInterest, totalPayment, currency }: ResultCardProps) => {
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-IN', {
       style: 'currency',
-      currency: 'INR',
+      currency: currency.code,
       maximumFractionDigits: 0,
     }).format(amount);
   };
