@@ -11,11 +11,16 @@ A modern, user-friendly EMI (Equated Monthly Installment) calculator built with 
 - Clean and intuitive user interface
 - Detailed breakdown of total payment, total interest, and monthly installments
 
-## 🚀 Demo
+## 🌐 Live Preview
 
-[Live Demo](https://emi-calculator-app-fawn.vercel.app/) <!-- Add your deployed app link here -->
+<div align="center">
+  
+### 🚀 [Experience the App](https://emi-calculator-app-fawn.vercel.app/) 
+#### Calculate Your EMI in Seconds! ⚡️
+  
+</div>
 
-![EMI Calculator](public/emi-calculator-app.png) <!-- Add your app screenshot here -->
+![EMI Calculator Screenshot](public/emi-calculator-app.png) <!-- Add your app screenshot here -->
 
 ## 🛠️ Technologies Used
 
@@ -29,7 +34,7 @@ A modern, user-friendly EMI (Equated Monthly Installment) calculator built with 
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/deepakpatil26/emi-calculator-app.git
+git clone https://github.com/yourusername/emi-calculator-app.git
 ```
 
 2. Navigate to the project directory:
@@ -94,7 +99,7 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 ## 👨‍💻 Author
 
 Your Name
-- GitHub: [@deepakpatil26](#)
+- GitHub: [@deepakpatil26](https://github.com/deepakpatil26)
 
 ## 🙏 Acknowledgments
 
