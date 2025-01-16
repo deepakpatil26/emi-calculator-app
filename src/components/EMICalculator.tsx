@@ -10,12 +10,19 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { useToast } from "@/components/ui/use-toast";
 import ResultCard from './ResultCard';
 import EMIChart from './EMIChart';
 import { Switch } from "@/components/ui/switch";
 import { InfoIcon, DownloadIcon, Share2Icon, RotateCcw } from "lucide-react";
 import { useTheme } from 'next-themes';
+import jsPDF from 'jspdf';
 
 const EMICalculator = () => {
   const { toast } = useToast();
@@ -86,26 +93,29 @@ const EMICalculator = () => {
     });
   };
 
-  const handleSave = () => {
-    const data = {
-      principal,
-      interest,
-      tenure,
-      emi,
-      totalInterest,
-      totalPayment,
-    };
-    
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'text/json' });
-    const url = window.URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = 'emi-calculation.json';
-    link.click();
+  const handleSave = (format: 'pdf' | 'csv') => {
+    if (format === 'pdf') {
+      const pdf = new jsPDF();
+      pdf.text('EMI Calculation Details', 20, 20);
+      pdf.text(`Loan Amount: ₹${formatINR(principal)}`, 20, 40);
+      pdf.text(`Interest Rate: ${interest}%`, 20, 50);
+      pdf.text(`Tenure: ${tenure} years`, 20, 60);
+      pdf.text(`Monthly EMI: ₹${Math.round(emi).toLocaleString('en-IN')}`, 20, 70);
+      pdf.text(`Total Interest: ₹${Math.round(totalInterest).toLocaleString('en-IN')}`, 20, 80);
+      pdf.text(`Total Payment: ₹${Math.round(totalPayment).toLocaleString('en-IN')}`, 20, 90);
+      pdf.save('emi-calculation.pdf');
+    } else {
+      const csvContent = `Loan Amount,Interest Rate,Tenure,Monthly EMI,Total Interest,Total Payment\n₹${formatINR(principal)},${interest}%,${tenure},₹${Math.round(emi).toLocaleString('en-IN')},₹${Math.round(totalInterest).toLocaleString('en-IN')},₹${Math.round(totalPayment).toLocaleString('en-IN')}`;
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'emi-calculation.csv';
+      link.click();
+    }
     
     toast({
       title: "Download Complete",
-      description: "Your EMI calculation details have been downloaded.",
+      description: `Your EMI calculation details have been downloaded as ${format.toUpperCase()}.`,
     });
   };
 
@@ -116,7 +126,7 @@ const EMICalculator = () => {
     };
 
     try {
-      if (navigator.share) {
+      if (navigator.canShare && navigator.canShare(shareData)) {
         await navigator.share(shareData);
         toast({
           title: "Shared Successfully",
@@ -132,7 +142,7 @@ const EMICalculator = () => {
     } catch (error) {
       toast({
         title: "Share Failed",
-        description: "Unable to share the EMI details.",
+        description: "Unable to share the EMI details. Your browser might not support sharing.",
         variant: "destructive",
       });
     }
@@ -155,9 +165,21 @@ const EMICalculator = () => {
             <Button variant="outline" size="icon" onClick={handleReset}>
               <RotateCcw className="h-4 w-4" />
             </Button>
-            <Button variant="outline" size="icon" onClick={handleSave}>
-              <DownloadIcon className="h-4 w-4" />
-            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="icon">
+                  <DownloadIcon className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuItem onClick={() => handleSave('pdf')}>
+                  Save as PDF
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleSave('csv')}>
+                  Save as CSV
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
             <Button variant="outline" size="icon" onClick={handleShare}>
               <Share2Icon className="h-4 w-4" />
             </Button>
