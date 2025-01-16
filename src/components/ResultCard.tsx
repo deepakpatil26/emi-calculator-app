@@ -11,11 +11,20 @@ interface ResultCardProps {
 
 const ResultCard = ({ emi, totalInterest, totalPayment, currency }: ResultCardProps) => {
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-IN', {
-      style: 'currency',
-      currency: currency.code,
-      maximumFractionDigits: 0,
-    }).format(amount);
+    // Use a default currency (INR) if none is provided
+    const currencyCode = currency?.code || 'INR';
+    const currencySymbol = currency?.symbol || '₹';
+    
+    try {
+      return new Intl.NumberFormat('en-IN', {
+        style: 'currency',
+        currency: currencyCode,
+        maximumFractionDigits: 0,
+      }).format(amount);
+    } catch (error) {
+      // Fallback formatting if Intl.NumberFormat fails
+      return `${currencySymbol}${amount.toLocaleString('en-IN')}`;
+    }
   };
 
   return (
