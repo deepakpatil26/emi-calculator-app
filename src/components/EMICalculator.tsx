@@ -20,7 +20,7 @@ import { useToast } from "@/components/ui/use-toast";
 import ResultCard from './ResultCard';
 import EMIChart from './EMIChart';
 import { Switch } from "@/components/ui/switch";
-import { InfoIcon, DownloadIcon, Share2Icon, RotateCcw } from "lucide-react";
+import { InfoIcon, DownloadIcon, Share2Icon, RotateCcw, Link2Icon, Copy, Mail } from "lucide-react";
 import { useTheme } from 'next-themes';
 import jsPDF from 'jspdf';
 
@@ -119,30 +119,50 @@ const EMICalculator = () => {
     });
   };
 
-  const handleShare = async () => {
+  const handleShare = async (method: 'link' | 'copy' | 'email') => {
     const shareData = {
       title: 'EMI Calculation Details',
       text: `Loan Amount: ₹${formatINR(principal)}\nInterest Rate: ${interest}%\nTenure: ${tenure} years\nMonthly EMI: ₹${Math.round(emi).toLocaleString('en-IN')}`,
+      url: window.location.href
     };
 
     try {
-      if (navigator.canShare && navigator.canShare(shareData)) {
-        await navigator.share(shareData);
-        toast({
-          title: "Shared Successfully",
-          description: "Your EMI details have been shared.",
-        });
-      } else {
-        await navigator.clipboard.writeText(shareData.text);
-        toast({
-          title: "Copied to Clipboard",
-          description: "The EMI details have been copied to your clipboard.",
-        });
+      switch (method) {
+        case 'link':
+          if (navigator.canShare && navigator.canShare(shareData)) {
+            await navigator.share(shareData);
+            toast({
+              title: "Shared Successfully",
+              description: "Your EMI details have been shared.",
+            });
+          } else {
+            throw new Error("Web Share API not supported");
+          }
+          break;
+        
+        case 'copy':
+          await navigator.clipboard.writeText(
+            `EMI Calculator Results:\n\n${shareData.text}\n\nCalculate your EMI at: ${shareData.url}`
+          );
+          toast({
+            title: "Copied to Clipboard",
+            description: "The EMI details and calculator link have been copied to your clipboard.",
+          });
+          break;
+        
+        case 'email':
+          const emailBody = encodeURIComponent(`${shareData.text}\n\nCalculate your EMI at: ${shareData.url}`);
+          window.location.href = `mailto:?subject=${encodeURIComponent(shareData.title)}&body=${emailBody}`;
+          toast({
+            title: "Email Client Opened",
+            description: "Share the EMI details via email.",
+          });
+          break;
       }
     } catch (error) {
       toast({
         title: "Share Failed",
-        description: "Unable to share the EMI details. Your browser might not support sharing.",
+        description: "Unable to share the EMI details. Please try another sharing method.",
         variant: "destructive",
       });
     }
@@ -180,9 +200,27 @@ const EMICalculator = () => {
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-            <Button variant="outline" size="icon" onClick={handleShare}>
-              <Share2Icon className="h-4 w-4" />
-            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="icon">
+                  <Share2Icon className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuItem onClick={() => handleShare('link')}>
+                  <Link2Icon className="h-4 w-4 mr-2" />
+                  Share link
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleShare('copy')}>
+                  <Copy className="h-4 w-4 mr-2" />
+                  Copy to clipboard
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleShare('email')}>
+                  <Mail className="h-4 w-4 mr-2" />
+                  Share via email
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
       </div>
