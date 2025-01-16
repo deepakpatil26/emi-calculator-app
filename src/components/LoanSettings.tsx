@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   Select,
   SelectContent,
@@ -6,7 +6,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { LOAN_TYPES, CURRENCIES, type LoanType, type Currency } from '@/types/calculator';
+import {
+  LOAN_TYPES,
+  CURRENCIES,
+  type LoanType,
+  type Currency,
+} from "@/types/calculator";
 
 interface LoanSettingsProps {
   selectedLoanType: string;
@@ -47,7 +52,7 @@ const LoanSettings = ({
         <Select
           value={selectedCurrency.code}
           onValueChange={(value) => {
-            const currency = CURRENCIES.find(c => c.code === value);
+            const currency = CURRENCIES.find((c) => c.code === value);
             if (currency) onCurrencyChange(currency);
           }}
         >

@@ -1,7 +1,7 @@
-import React from 'react';
+import React from "react";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import { useTheme } from 'next-themes';
+import { useTheme } from "next-themes";
 import { useToast } from "@/components/ui/use-toast";
 import {
   DropdownMenu,
@@ -9,12 +9,19 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { RotateCcw, DownloadIcon, Share2Icon, Link2Icon, Copy, Mail } from "lucide-react";
+import {
+  RotateCcw,
+  DownloadIcon,
+  Share2Icon,
+  Link2Icon,
+  Copy,
+  Mail,
+} from "lucide-react";
 
 interface HeaderActionsProps {
   onReset: () => void;
-  onSave: (format: 'pdf' | 'csv') => void;
-  onShare: (method: 'link' | 'copy' | 'email') => void;
+  onSave: (format: "pdf" | "csv") => void;
+  onShare: (method: "link" | "copy" | "email") => void;
 }
 
 const HeaderActions = ({ onReset, onSave, onShare }: HeaderActionsProps) => {
@@ -36,10 +43,10 @@ const HeaderActions = ({ onReset, onSave, onShare }: HeaderActionsProps) => {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
-          <DropdownMenuItem onClick={() => onSave('pdf')}>
+          <DropdownMenuItem onClick={() => onSave("pdf")}>
             Save as PDF
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => onSave('csv')}>
+          <DropdownMenuItem onClick={() => onSave("csv")}>
             Save as CSV
           </DropdownMenuItem>
         </DropdownMenuContent>
@@ -51,15 +58,15 @@ const HeaderActions = ({ onReset, onSave, onShare }: HeaderActionsProps) => {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
-          <DropdownMenuItem onClick={() => onShare('link')}>
+          <DropdownMenuItem onClick={() => onShare("link")}>
             <Link2Icon className="h-4 w-4 mr-2" />
             Share link
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => onShare('copy')}>
+          <DropdownMenuItem onClick={() => onShare("copy")}>
             <Copy className="h-4 w-4 mr-2" />
             Copy to clipboard
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => onShare('email')}>
+          <DropdownMenuItem onClick={() => onShare("email")}>
             <Mail className="h-4 w-4 mr-2" />
             Share via email
           </DropdownMenuItem>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
@@ -9,8 +9,8 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { InfoIcon } from "lucide-react";
-import { type Currency } from '@/types/calculator';
-import { LOAN_TYPES } from '@/types/calculator';
+import { type Currency } from "@/types/calculator";
+import { LOAN_TYPES } from "@/types/calculator";
 
 interface LoanInputsProps {
   principal: string;
@@ -45,7 +45,9 @@ const LoanInputs = ({
     <div className="space-y-4">
       <div className="space-y-2">
         <div className="flex items-center gap-2">
-          <Label htmlFor="principal" className="text-foreground">Loan Amount ({currency.symbol})</Label>
+          <Label htmlFor="principal" className="text-foreground">
+            Loan Amount ({currency.symbol})
+          </Label>
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger>
@@ -75,7 +77,9 @@ const LoanInputs = ({
 
       <div className="space-y-2">
         <div className="flex items-center gap-2">
-          <Label htmlFor="interest" className="text-foreground">Interest Rate (% per annum)</Label>
+          <Label htmlFor="interest" className="text-foreground">
+            Interest Rate (% per annum)
+          </Label>
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger>
@@ -100,7 +104,11 @@ const LoanInputs = ({
         />
         <Slider
           value={[parseFloat(interest)]}
-          onValueChange={(value) => onInterestChange({ target: { value: value[0].toString() } } as React.ChangeEvent<HTMLInputElement>)}
+          onValueChange={(value) =>
+            onInterestChange({
+              target: { value: value[0].toString() },
+            } as React.ChangeEvent<HTMLInputElement>)
+          }
           max={30}
           step={0.1}
           className="mt-2"
@@ -109,7 +117,9 @@ const LoanInputs = ({
 
       <div className="space-y-2">
         <div className="flex items-center gap-2">
-          <Label htmlFor="tenure" className="text-foreground">Loan Tenure (Years)</Label>
+          <Label htmlFor="tenure" className="text-foreground">
+            Loan Tenure (Years)
+          </Label>
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger>
@@ -133,7 +143,11 @@ const LoanInputs = ({
         />
         <Slider
           value={[parseFloat(tenure)]}
-          onValueChange={(value) => onTenureChange({ target: { value: value[0].toString() } } as React.ChangeEvent<HTMLInputElement>)}
+          onValueChange={(value) =>
+            onTenureChange({
+              target: { value: value[0].toString() },
+            } as React.ChangeEvent<HTMLInputElement>)
+          }
           max={30}
           step={0.5}
           className="mt-2"
